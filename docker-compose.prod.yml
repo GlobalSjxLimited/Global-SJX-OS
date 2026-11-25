@@ -1,0 +1,41 @@
+# PRODUCTION-LIKE stack. Requires a real .env.prod (see docs/ENVIRONMENTS.md). The API refuses to start with weak secrets.
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+name: gsjx-prod
+services:
+  mongo:
+    image: mongo:7
+    command: ["--auth"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:?set MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?set MONGO_ROOT_PASSWORD}
+    volumes: [mongo_prod:/data/db]
+    networks: [internal]            # not published to the host
+  backend:
+    build: ./backend
+    environment:
+      APP_ENV: production
+      NODE_ENV: production
+      MONGO_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/gsjx_os_prod?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET (32+ random chars)}
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN:?set CLIENT_ORIGIN (https://os.example.com,https://www.example.com)}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+    volumes: [uploads_prod:/app/uploads]
+    depends_on: [mongo]
+    networks: [internal, edge]
+    restart: unless-stopped
+  frontend:
+    build:
+      context: ./frontend
+      args: { VITE_API_URL: ${PUBLIC_API_URL:?set PUBLIC_API_URL} }
+    networks: [edge]
+    restart: unless-stopped
+volumes:
+  mongo_prod:
+  uploads_prod:
+networks:
+  internal:
+    internal: true
+  edge:

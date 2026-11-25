@@ -1,0 +1,31 @@
+# DEVELOPMENT stack — isolated network and volume. Synthetic data only (npm run seed).
+# Production-like stack: docker-compose.prod.yml (separate network, volume, credentials).
+name: gsjx-dev
+services:
+  mongo:
+    image: mongo:7
+    volumes: [mongo_dev:/data/db]
+    networks: [dev]
+    ports: ["127.0.0.1:27017:27017"]
+  backend:
+    build: ./backend
+    environment:
+      APP_ENV: development
+      NODE_ENV: development
+      MONGO_URI: mongodb://mongo:27017/gsjx_os_dev
+      JWT_SECRET: dev-only-insecure-secret-change-me
+      CLIENT_ORIGIN: http://localhost:5173,http://localhost:8080
+      ALLOW_SEED: "true"
+    depends_on: [mongo]
+    networks: [dev]
+    ports: ["5000:5000"]
+  frontend:
+    build:
+      context: ./frontend
+      args: { VITE_API_URL: http://localhost:5000/api }
+    networks: [dev]
+    ports: ["5173:80"]
+volumes:
+  mongo_dev:
+networks:
+  dev:

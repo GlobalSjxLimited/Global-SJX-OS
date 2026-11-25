@@ -1,0 +1,18 @@
+/* Collapsible sidebar groups */
+.nav-group { display: flex; flex-direction: column; }
+.nav-group-head {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border: 0; background: transparent;
+    color: var(--muted); font: inherit; font-size: 13.5px; font-weight: 600; border-radius: var(--radius-s); cursor: pointer; text-align: left;
+}
+.nav-group-head:hover { background: var(--surface-2); color: var(--text); }
+.nav-group-head.has-active { color: var(--accent); }
+.nav-group-head .nav-group-title { flex: 1; }
+.nav-group-head .nav-group-count { font-size: 11px; color: var(--muted-2); font-weight: 500; }
+.nav-group-head .chev { width: 15px; height: 15px; transition: transform .2s var(--ease); flex-shrink: 0; }
+.nav-group.open > .nav-group-head .chev { transform: rotate(180deg); }
+.nav-group-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .22s var(--ease); }
+.nav-group.open > .nav-group-body { grid-template-rows: 1fr; }
+.nav-group-body > div { overflow: hidden; min-height: 0; }
+.nav-group-body .sidebar-link { margin-left: 14px; padding-left: 14px; border-left: 1px solid var(--line); border-radius: 0 var(--radius-s) var(--radius-s) 0; font-size: 13px; }
+.nav-group-body .sidebar-link.active { border-left-color: var(--accent); }
+.nav-divider { height: 1px; background: var(--line); margin: 8px 6px; }

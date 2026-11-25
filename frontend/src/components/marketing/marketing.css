@@ -1,0 +1,16 @@
+.mk-media { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.mk-tile { position: relative; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.mk-tile img, .mk-tile > div:first-child { width: 100%; height: 100px; object-fit: cover; display: block; }
+.mk-tile .mk-cap { padding: 6px 8px; font-size: 11.5px; display: grid; gap: 4px; }
+.mk-tile .mk-x { position: absolute; top: 4px; right: 4px; }
+.mk-preview { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--surface); white-space: pre-wrap; font-size: 13.5px; line-height: 1.5; }
+.mk-count { font-size: 11.5px; color: var(--muted); }
+.mk-count.over { color: var(--danger); font-weight: 700; }
+.mk-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+.mk-step { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 12.5px; background: var(--surface); }
+.mk-step b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 2px; }
+.mk-step.done { border-color: var(--success, #2a9d62); }
+.mk-step.now { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+.mk-bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.mk-bar > i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold, #F0A93B)); }
+@media (max-width: 720px) { .mk-steps { grid-template-columns: 1fr 1fr; } }
