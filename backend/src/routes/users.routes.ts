@@ -20,6 +20,7 @@ import { MODULE_KEYS, ALWAYS_ON, ADMIN_ONLY_MODULES, ADMIN_ONLY_ROLES } from '..
 import { effectiveModules } from '../services/access.service';
 import { audit } from '../services/audit.service';
 import { sendMail } from '../services/email.service';
+import { logger } from '../utils/logger';
 import { renderEmail, kvTable, callout, esc } from '../services/mail.templates';
 import { env } from '../config/env';
 
@@ -67,7 +68,15 @@ async function sendCredentialsEmail(user: any, password: string, createdBy: stri
     body,
     cta: { label: 'Sign in', path: '/login' },
   });
-  return sendMail({ to: user.email, subject: reason === 'new' ? 'Your Global SJX OS account' : 'Your Global SJX OS password was reset', html, attachments });
+  // A mail failure must never lose the temporary password or turn a saved account into a 500: report "not delivered" so the caller shows the password once.
+  try {
+    const r = await sendMail({ to: user.email, subject: reason === 'new' ? 'Your Global SJX OS account' : 'Your Global SJX OS password was reset', html, attachments });
+    logger.info({ to: user.email, delivered: r.delivered, reason }, 'credentials e-mail handed to the mail server (this is not proof of inbox delivery)');
+    return r;
+  } catch (err) {
+    logger.error({ err, to: user.email, reason }, 'credentials e-mail FAILED to send');
+    return { delivered: false };
+  }
 }
 
 /* --------------------------------- List ------------------------------------ */

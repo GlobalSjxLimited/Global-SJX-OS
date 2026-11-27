@@ -13,7 +13,8 @@
     "migrate:selftest": "ts-node --transpile-only scripts/migrate-legacy.selftest.ts",
     "test": "jest --runInBand",
     "bootstrap": "ts-node --transpile-only scripts/bootstrap-production.ts",
-    "import:folder": "ts-node --transpile-only scripts/import-isms-folder.ts"
+    "import:folder": "ts-node --transpile-only scripts/import-isms-folder.ts",
+    "mail:test": "ts-node --transpile-only scripts/test-email.ts"
   },
   "dependencies": {
     "archiver": "^7.0.1",
